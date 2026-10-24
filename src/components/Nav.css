@@ -1,0 +1,189 @@
+.nav {
+  position: sticky;
+  top: 0;
+  z-index: 20;
+  background: var(--paper);
+  border-bottom: 1px solid var(--hair);
+  opacity: 0;
+  pointer-events: none;
+  transform: translateY(-8px);
+  transition: opacity 0.4s ease, transform 0.4s var(--ease-precise),
+    background-color 0.18s ease, border-color 0.18s ease;
+}
+
+.nav--visible {
+  opacity: 1;
+  pointer-events: auto;
+  transform: translateY(0);
+}
+
+.nav-in {
+  width: min(100% - (var(--page-pad) * 2), var(--frame));
+  margin-inline: auto;
+  height: var(--nav-h);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--gutter);
+}
+
+.brand {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  min-width: 0;
+}
+
+.brand svg {
+  width: 34px;
+  height: auto;
+  display: block;
+  flex: none;
+}
+
+.brand-name {
+  font-size: 15px;
+  line-height: 16px;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+}
+
+.brand-zh {
+  font-family: var(--mono);
+  font-size: 9px;
+  line-height: 16px;
+  letter-spacing: 0.16em;
+  color: var(--muted);
+  padding-left: 12px;
+  border-left: 1px solid var(--hair);
+  white-space: nowrap;
+}
+
+.nav-right {
+  display: flex;
+  align-items: center;
+  gap: var(--gutter);
+}
+
+.nav-links {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 28px;
+}
+
+/* Sliding orange bit: active section indicator */
+.nav-bit {
+  position: absolute;
+  left: 0;
+  top: 50%;
+  width: 5px;
+  height: 5px;
+  background: var(--accent);
+  transform: translate(var(--bit-x, -20px), -50%);
+  transition: transform 0.32s var(--ease-precise), opacity 0.2s ease;
+  opacity: var(--bit-op, 0);
+  pointer-events: none;
+}
+
+.nav-links a {
+  position: relative;
+  display: inline-flex;
+  align-items: baseline;
+  gap: 7px;
+  font-size: 13px;
+  line-height: 16px;
+  padding: 4px 0;
+  border-bottom: none;
+}
+
+/* Left-draw underline via ::after */
+.nav-links a::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: 1px;
+  background: var(--ink);
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform 0.22s var(--ease-precise);
+}
+
+.nav-links a:hover::after,
+.nav-links a:focus-visible::after {
+  transform: scaleX(1);
+}
+
+.nav-links .n {
+  font-family: var(--mono);
+  font-size: 9px;
+  letter-spacing: 0.08em;
+  color: var(--muted);
+}
+
+.nav-sep {
+  width: 1px;
+  height: 20px;
+  background: var(--hair);
+}
+
+.theme-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--u);
+  margin: 0;
+  padding: 6px 0;
+  background: none;
+  border: 0;
+  color: var(--ink);
+  font-family: var(--mono);
+  font-size: 9px;
+  line-height: 12px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  cursor: pointer; /* coarse/no-fine fallback */
+}
+
+/* On fine-pointer devices the custom crosshair cursor covers the whole page;
+   the higher-specificity cursor:pointer here would override the global rule
+   in index.css and leak the native cursor over the button. */
+@media (pointer: fine) {
+  .theme-btn { cursor: none; }
+}
+
+.theme-btn .sw {
+  width: 9px;
+  height: 9px;
+  border: 1px solid var(--ink);
+  display: block;
+  transition: background-color 0.15s ease, transform 0.18s var(--ease-precise);
+}
+
+.theme-btn.is-dark .sw { background: var(--ink); }
+
+/* Press-pop scale feedback */
+.theme-btn.is-pressed .sw { transform: scale(1.45); }
+
+/* Logo bit breathe on brand hover */
+@keyframes bit-breathe {
+  0%, 100% { opacity: 1; }
+  50%       { opacity: 0.55; }
+}
+
+.brand:hover .logo-bit {
+  animation: bit-breathe 2s var(--ease-precise) infinite;
+}
+
+@media (max-width: 900px) {
+  .brand-zh { display: none; }
+}
+
+@media (max-width: 760px) {
+  .nav-in { gap: calc(var(--u) * 2); }
+  .nav-right { gap: calc(var(--u) * 2); }
+  .nav-links { gap: 20px; }
+  .nav-links .n { display: none; }
+  .nav-sep { display: none; }
+}

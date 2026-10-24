@@ -1,0 +1,110 @@
+.section {
+  border-top: 1px solid var(--hair);
+  scroll-margin-top: calc(var(--nav-h) + var(--u));
+}
+
+.sect-head {
+  display: grid;
+  grid-template-columns: calc(var(--u) * 14) minmax(0, 1fr) auto;
+  gap: var(--gutter);
+  align-items: baseline;
+  padding-top: calc(var(--u) * 10);
+  padding-bottom: 20px;
+}
+
+.sect-idx { color: var(--muted); }
+
+.sect-title {
+  margin: 0;
+  font-size: 28px;
+  line-height: 32px;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+  display: flex;
+  align-items: baseline;
+  gap: calc(var(--u) * 2);
+  flex-wrap: wrap;
+}
+
+.sect-title .en {
+  font-family: var(--mono);
+  font-size: 10px;
+  line-height: 16px;
+  font-weight: 400;
+  letter-spacing: 0.16em;
+  color: var(--muted);
+}
+
+.sect-meta { color: var(--muted); white-space: nowrap; }
+
+.colticks {
+  position: relative;
+  display: grid;
+  grid-template-columns: repeat(12, minmax(0, 1fr));
+  gap: var(--gutter);
+}
+
+.colticks::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  width: 100%;
+  height: 1px;
+  background: var(--hair-strong);
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform 0.7s var(--ease-precise) 0.05s;
+}
+
+.section.is-in .colticks::after {
+  transform: scaleX(1);
+}
+
+.colticks span {
+  font-family: var(--mono);
+  font-size: 9px;
+  line-height: 12px;
+  letter-spacing: 0.06em;
+  color: var(--muted);
+  border-left: 1px solid var(--hair-strong);
+  padding: 6px 0 6px 4px;
+  opacity: 0;
+  transform: translateY(3px);
+  transition: opacity 0.4s var(--ease-precise), transform 0.4s var(--ease-precise);
+  transition-delay: calc(var(--i, 0) * 25ms + 0.12s);
+}
+
+.section.is-in .colticks span {
+  opacity: 1;
+  transform: none;
+}
+
+.colticks span:last-child { border-right: 1px solid var(--hair-strong); }
+
+@media (max-width: 900px) {
+  .sect-head {
+    grid-template-columns: calc(var(--u) * 10) minmax(0, 1fr) auto;
+    padding-top: calc(var(--u) * 8);
+  }
+}
+
+@media (max-width: 760px) {
+  .sect-head {
+    grid-template-columns: 1fr auto;
+    gap: var(--u) calc(var(--u) * 2);
+    padding-top: calc(var(--u) * 7);
+    padding-bottom: calc(var(--u) * 2);
+  }
+  .sect-idx { grid-column: 1 / -1; }
+  .sect-title { font-size: 24px; line-height: 32px; }
+  .sect-meta {
+    grid-column: 1 / -1;
+    align-self: start;
+    margin-top: 4px;
+  }
+
+  /* Numbers don't fit 12 narrow columns; keep the rhythm as dots. */
+  .colticks span { font-size: 0; padding: 5px 0; }
+  .colticks span::before { content: '·'; font-size: 8px; }
+}

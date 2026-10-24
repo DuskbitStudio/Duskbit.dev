@@ -1,0 +1,240 @@
+.hero {
+  position: relative;
+  padding: calc(var(--u) * 5) 0 calc(var(--u) * 10);
+  overflow: hidden;
+}
+
+.hero .wrap {
+  position: relative;
+  /* The wordmark sizes against this box, so it always spans the frame. */
+  container-type: inline-size;
+}
+
+.colgrid {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  grid-template-columns: repeat(12, minmax(0, 1fr));
+  gap: var(--gutter);
+  pointer-events: none;
+  z-index: 0;
+}
+
+.colgrid i {
+  display: block;
+  border-left: 1px solid var(--hair-soft);
+}
+
+.colgrid i:last-child { border-right: 1px solid var(--hair-soft); }
+
+.hero .wrap > *:not(.colgrid) { position: relative; z-index: 1; }
+
+.hero-top {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: var(--gutter);
+  padding-bottom: calc(var(--u) * 3);
+  border-bottom: 1px solid var(--hair);
+  color: var(--muted);
+}
+
+.hero-top span:first-child { color: var(--ink); }
+
+.plate { padding-top: calc(var(--u) * 6); }
+
+/*
+  28cqi = 336px at the 1200 frame, matching the original desktop size.
+  "Duskbit" measures at most ~3.41em across the system stack, so the
+  word fills ~95% of the frame at every width instead of relying on
+  overflow: hidden to cut it.
+*/
+.wordmark {
+  margin: 0;
+  font-family: var(--sans);
+  font-weight: 600;
+  font-size: min(336px, 28cqi);
+  line-height: 0.82;
+  letter-spacing: -0.045em;
+  text-indent: -0.02em;
+  white-space: nowrap;
+}
+
+/* ── dimension line ── */
+
+/* Parallax wrapper: consumes --dim-shift set by scroll rAF */
+.dim-parallax-wrap {
+  transform: translateY(var(--dim-shift, 0px));
+  will-change: transform;
+}
+
+.dim {
+  position: relative;
+  height: calc(var(--u) * 3);
+  margin-top: calc(var(--u) * 3);
+}
+
+/* Draw-in: line and ticks scale from left; caps scale from top */
+.dim-line {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 11px;
+  height: 1px;
+  background: var(--hair-strong);
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform 0.65s var(--ease-precise);
+}
+
+.dim-cap {
+  position: absolute;
+  top: 4px;
+  width: 1px;
+  height: 15px;
+  background: var(--hair-strong);
+  transform: scaleY(0);
+  transform-origin: top;
+}
+
+.dim-cap.l {
+  left: 0;
+  transition: transform 0.4s var(--ease-precise) 0s;
+}
+
+.dim-cap.r {
+  right: 0;
+  transition: transform 0.4s var(--ease-precise) 0.3s;
+}
+
+.dim-tick {
+  position: absolute;
+  top: 7px;
+  width: 1px;
+  height: 9px;
+  background: var(--hair-strong);
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform 0.65s var(--ease-precise);
+}
+
+.dim-tick.t25 { left: 25%; }
+.dim-tick.t50 { left: 50%; }
+.dim-tick.t75 { left: 75%; }
+
+/* Assembled state: draw everything in */
+.dim.is-assembled .dim-line {
+  transform: scaleX(1);
+  transition-delay: 0.05s;
+}
+
+.dim.is-assembled .dim-tick.t25 {
+  transform: scaleX(1);
+  transition-delay: 0.18s;
+}
+
+.dim.is-assembled .dim-tick.t50 {
+  transform: scaleX(1);
+  transition-delay: 0.28s;
+}
+
+.dim.is-assembled .dim-tick.t75 {
+  transform: scaleX(1);
+  transition-delay: 0.38s;
+}
+
+.dim.is-assembled .dim-cap.l,
+.dim.is-assembled .dim-cap.r {
+  transform: scaleY(1);
+}
+
+.dim-labels {
+  position: relative;
+  height: calc(var(--u) * 2);
+}
+
+.dim-labels span {
+  position: absolute;
+  top: 0;
+  transform: translateX(-50%);
+  font-family: var(--mono);
+  font-size: 9px;
+  line-height: 12px;
+  letter-spacing: 0.08em;
+  color: var(--muted);
+  font-variant-numeric: tabular-nums;
+}
+
+.dim-labels span:nth-child(1) { left: 0; transform: none; }
+.dim-labels span:nth-child(2) { left: 25%; }
+.dim-labels span:nth-child(3) { left: 50%; }
+.dim-labels span:nth-child(4) { left: 75%; }
+.dim-labels span:nth-child(5) { left: 100%; transform: translateX(-100%); }
+
+/* ── spec + lede ── */
+
+.hero-bottom {
+  display: grid;
+  grid-template-columns: repeat(12, minmax(0, 1fr));
+  gap: var(--gutter);
+  padding-top: calc(var(--u) * 8);
+}
+
+.spec {
+  grid-column: 1 / span 4;
+  display: grid;
+  grid-template-columns: auto 1fr;
+  align-content: start;
+  margin: 0;
+  border-top: 1px solid var(--ink);
+}
+
+.spec div { display: contents; }
+
+.spec dt,
+.spec dd {
+  margin: 0;
+  padding: var(--u) 0;
+  border-bottom: 1px solid var(--hair);
+  font-family: var(--mono);
+  font-size: 9px;
+  line-height: 16px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+.spec dt { color: var(--muted); padding-right: calc(var(--u) * 2); }
+.spec dd { text-align: right; font-variant-numeric: tabular-nums; }
+
+.lede {
+  grid-column: 6 / span 7;
+  margin: 0;
+  font-size: clamp(20px, 1.9vw, 27px);
+  line-height: 1.55;
+  letter-spacing: 0.005em;
+  font-weight: 400;
+  max-width: 22em;
+}
+
+.lede .soft { color: var(--muted); }
+
+/* ── responsive ── */
+
+@media (max-width: 1100px) {
+  .spec { grid-column: 1 / span 3; }
+  .lede { grid-column: 5 / span 8; }
+}
+
+@media (max-width: 900px) {
+  .hero-bottom { padding-top: calc(var(--u) * 6); }
+  .spec { grid-column: 1 / -1; max-width: 420px; }
+  .lede { grid-column: 1 / -1; margin-top: calc(var(--u) * 5); }
+}
+
+@media (max-width: 760px) {
+  .hero { padding: calc(var(--u) * 3) 0 calc(var(--u) * 7); }
+  .hero-top { padding-bottom: calc(var(--u) * 2); flex-wrap: wrap; gap: 4px var(--gutter); }
+  .hero-top span:last-child { display: none; }
+  .plate { padding-top: calc(var(--u) * 4); }
+  .dim { margin-top: calc(var(--u) * 2); }
+}

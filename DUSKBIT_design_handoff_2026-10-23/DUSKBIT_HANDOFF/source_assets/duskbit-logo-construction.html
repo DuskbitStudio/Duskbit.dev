@@ -1,0 +1,121 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Duskbit · 标志动画与比例构造</title>
+<style>
+:root{--orange:#F26B3A;--ink:#222;--paper:#FAF9F6;--muted:#77756f;--line:#e2dfd8;--guide:#708ba0;--stage:#FAF9F6;--mark:#222;--label:#687880;color-scheme:light}
+*{box-sizing:border-box}body{margin:0;background:#f0efeb;color:var(--ink);font:14px/1.6 system-ui,-apple-system,"Segoe UI","PingFang SC","Microsoft YaHei",sans-serif}button,input{font:inherit}button{cursor:pointer}button:focus-visible,input:focus-visible{outline:2px solid var(--orange);outline-offset:3px}button{border:1px solid var(--line);background:transparent;color:inherit;border-radius:4px;padding:7px 12px}button:hover{border-color:#aaa69d}button.active{background:var(--ink);color:var(--paper);border-color:var(--ink)}header{display:flex;align-items:center;justify-content:space-between;gap:20px;padding:24px 36px;border-bottom:1px solid var(--line)}.brand{font-size:22px;font-weight:650;letter-spacing:-.6px}.brand b{color:var(--orange)}.eyebrow{font:11px/1.6 ui-monospace,monospace;letter-spacing:1.5px;color:var(--muted)}main{max-width:1500px;margin:auto;padding:28px 36px}.layout{display:grid;grid-template-columns:minmax(0,1fr) 292px;gap:24px}.board{background:var(--paper);border:1px solid var(--line);min-width:0}.toolbar{padding:14px 18px;border-bottom:1px solid var(--line);display:flex;gap:12px;justify-content:space-between;align-items:center;flex-wrap:wrap}.toggle{display:flex;gap:6px;flex-wrap:wrap}.checks{display:flex;gap:14px;flex-wrap:wrap}.checks label{display:flex;gap:6px;align-items:center;font-size:12px;color:var(--muted)}input[type=checkbox]{accent-color:var(--orange)}.stage{background:var(--stage);color:var(--mark);padding:12px;transition:background .15s}.stage.dark{--stage:#191919;--mark:#f4f2ed;--label:#a7b6c0;--guide:#8baabd}.stage svg{display:block;width:100%;height:auto;min-height:260px}.stage .shape{fill:var(--mark)}.stage .dot{fill:var(--orange)}.construction{stroke:var(--guide);fill:none;stroke-width:1;vector-effect:non-scaling-stroke;opacity:.48}.construction.strong{stroke:var(--orange);opacity:.6}.axis{stroke-dasharray:5 6;opacity:.35}.dimensions{stroke:var(--label);fill:none;stroke-width:1;vector-effect:non-scaling-stroke}.svg-label{fill:var(--label);font:12px ui-monospace,monospace;stroke:none}.guidetag{fill:var(--orange);font:12px ui-monospace,monospace;stroke:none}.stage-footer{padding:12px 18px;border-top:1px solid var(--line);font:12px/1.5 ui-monospace,monospace;color:var(--muted);display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap}.panel{border-bottom:1px solid var(--line);padding:0 0 22px;margin-bottom:22px}.panel h2{font-size:14px;margin:0 0 14px;font-weight:600}.field{margin:18px 0}.field label{display:flex;justify-content:space-between;gap:10px}.field output{font:12px ui-monospace,monospace;color:var(--muted)}input[type=range]{display:block;width:100%;margin:12px 0;accent-color:var(--orange)}.small{font-size:12px;color:var(--muted)}.formula{display:grid;grid-template-columns:1fr auto;gap:8px 12px;font-size:12px}.formula code{font:12px ui-monospace,monospace;text-align:right}.actions{display:flex;flex-wrap:wrap;gap:8px;margin-top:16px}.primary{background:var(--ink);color:var(--paper);border-color:var(--ink)}.samples{margin-top:24px;border-top:1px solid var(--line);padding-top:20px}.samples-head{display:flex;justify-content:space-between;gap:12px;align-items:center;margin-bottom:14px}.samples-head h2{font-size:13px;font-weight:500;margin:0}.sample-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:14px}.sample{background:var(--paper);height:110px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:15px}.sample span{font:11px ui-monospace,monospace;color:var(--muted)}.notes{max-width:800px;font-size:12px;color:var(--muted);margin:18px 0 0}.status{min-height:20px;font-size:12px;color:var(--muted)}.legend{display:flex;gap:15px;flex-wrap:wrap;margin-top:13px;font-size:12px;color:var(--muted)}.legend i{display:inline-block;width:9px;height:9px;border:1px solid var(--guide);border-radius:50%;margin-right:5px}.legend .orange{border-color:var(--orange)}footer{padding:24px 0 0;font:11px ui-monospace,monospace;color:var(--muted);letter-spacing:1px}
+@media(max-width:900px){header{padding:18px 20px}main{padding:20px}.layout{grid-template-columns:1fr}aside{display:grid;grid-template-columns:1fr 1fr;gap:22px}.panel{margin:0}.stage svg{min-height:0}}@media(max-width:540px){header{align-items:flex-start;gap:10px}.eyebrow{font-size:10px;letter-spacing:.6px}.brand{font-size:20px}main{padding:12px}.toolbar{padding:12px}.layout{gap:20px}aside{grid-template-columns:1fr}.sample-grid{grid-template-columns:repeat(2,1fr)}.stage{padding:0}.stage-footer{padding:10px 12px;font-size:11px}.samples-head{align-items:flex-start}.checks{gap:10px}button{min-height:38px}.notes{margin-bottom:6px}}
+@media(prefers-reduced-motion:reduce){.stage{transition:none}}
+.motion-controls{display:flex;align-items:center;gap:16px;flex-wrap:wrap;padding:12px 18px;border-top:1px solid var(--line)}.motion-controls[hidden]{display:none}.motion-controls label{display:flex;align-items:center;gap:6px;font-size:12px;color:var(--muted)}.motion-controls .small{margin-left:auto}.legend[hidden]{display:none}
+</style>
+</head>
+<body>
+<header><div><div class="brand">duskbit<b>.</b></div><div class="eyebrow">LOGO / GEOMETRIC CONSTRUCTION</div></div><div class="eyebrow">暮点工作室<br>中括号 · 一个 bit</div></header>
+<main>
+<div class="layout">
+<div>
+<section class="board" aria-label="标志构造画板">
+<div class="toolbar"><div class="toggle" role="group" aria-label="画板视图"><button id="motionView" class="active" aria-pressed="true">标志动画</button><button id="constructionView" aria-pressed="false">辅助作图</button><button id="cleanView" aria-pressed="false">纯净预览</button></div><div class="checks"><label><input id="dimensions" type="checkbox" checked>尺寸标注</label><label><input id="dark" type="checkbox">深色背景</label></div></div>
+<div id="stage" class="stage"><svg id="drawing" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Duskbit 中括号方点标志的圆模数辅助作图"></svg></div>
+<div class="motion-controls" id="motionControls"><button id="replay">重播动画</button><label><input id="loopMotion" type="checkbox">循环播放</label><span class="small" id="motionStatus" role="status" aria-live="polite">2 秒 · 入场</span></div>
+<div class="stage-footer"><span id="ratio"></span><span>中心方点 #F26B3A</span></div>
+</section>
+<div class="legend" id="constructionLegend" hidden><span><i></i>圆模数与相切关系</span><span><i class="orange"></i>方点内切圆 / 外接圆</span></div>
+<section class="samples" aria-label="小尺寸预览"><div class="samples-head"><h2>小尺寸检查</h2><span class="small">按整体高度显示 · 未做像素微调</span></div><div class="sample-grid" id="samples"></div></section>
+</div>
+<aside>
+<section class="panel"><h2>三个圆模数</h2><div class="small">以 u 为单位；圆的直径对应实际边界。</div>
+<div class="field"><label for="stroke">笔画圆直径 t <output id="strokeVal"></output></label><input type="range" id="stroke" min="0.6" max="1.4" step="0.05" value="1"></div>
+<div class="field"><label for="point">方点内切圆直径 s <output id="pointVal"></output></label><input type="range" id="point" min="2" max="4" step="0.05" value="3"></div>
+<div class="field"><label for="gap">横向留白圆直径 g <output id="gapVal"></output></label><input type="range" id="gap" min="0.5" max="2.8" step="0.05" value="0.75"></div>
+<p class="small">上下边距 v 固定为 2u；横向间距独立调整。</p>
+<button id="reset">恢复建议比例</button>
+</section>
+<section class="panel"><h2>由模数推导</h2><div class="formula"><span>整体高度 H</span><code id="heightFormula"></code><span>括号臂长 a</span><code id="armFormula"></code><span>整体宽度 W</span><code id="widthFormula"></code><span>方点外接圆半径</span><code id="radiusFormula"></code></div><p class="small">方点距整体上下边界为 v；距括号臂端投影线为 g。臂长取 v + t/2。改变 g 时，两侧括号只沿水平方向对称移动。</p>
+<div class="actions"><button class="primary" id="export">导出标志 SVG</button><button id="exportGuides">导出构造 SVG</button></div><div id="status" class="status" role="status" aria-live="polite"></div></section>
+</aside>
+</div>
+<p class="notes">这是一套建议的比例规则：用圆来统一笔画、方点与留白的尺度。圆与边界的相切关系可复核；比例本身仍是视觉设计的选择，并非由某种唯一数学定律决定。</p>
+<footer>DUSKBIT / BRACKET & BIT / CONSTRUCTION STUDY</footer>
+</main>
+<script>
+(()=>{
+'use strict';
+const $=id=>document.getElementById(id);const ns='http://www.w3.org/2000/svg';let mode='motion';let current;let motionFrame=null,motionTimer=null,moving=null,motionPhase='idle';const MOTION_DURATION=2000;
+const reducedMotion=window.matchMedia('(prefers-reduced-motion: reduce)');
+const fmt=n=>Number(n.toFixed(3)).toString();
+function geometry(t,s,g){const v=2,a=v+t/2,H=s+2*v,W=2*a+2*g+s;return{t,s,g,v,a,H,W,qx:a+g,qy:v,cx:W/2,cy:H/2};}
+function element(tag,attrs={},text){const e=document.createElementNS(ns,tag);Object.entries(attrs).forEach(([k,v])=>e.setAttribute(k,v));if(text!==undefined)e.textContent=text;return e;}
+function buildMark(p,color='#222',scale=1){const group=element('g',{transform:'scale('+scale+')'});const {t,s,a,H,W,qx,qy}=p;const left=`M0 0H${a}V${t}H${t}V${H-t}H${a}V${H}H0Z`;const right=`M${W} 0H${W-a}V${t}H${W-t}V${H-t}H${W-a}V${H}H${W}Z`;group.append(element('path',{d:left+' '+right,fill:color}),element('rect',{x:qx,y:qy,width:s,height:s,fill:'#F26B3A'}));return group;}
+function stopMotion(){if(motionFrame!==null)cancelAnimationFrame(motionFrame);if(motionTimer!==null)clearTimeout(motionTimer);motionFrame=motionTimer=null;motionPhase='idle';}
+const clamp=n=>Math.max(0,Math.min(1,n));
+function cubicBezier(x1,y1,x2,y2){
+const sample=(t,a,b)=>3*(1-t)*(1-t)*t*a+3*(1-t)*t*t*b+t*t*t;
+return progress=>{const x=clamp(progress);if(x===0||x===1)return x;let lo=0,hi=1;for(let i=0;i<26;i++){const t=(lo+hi)/2;if(sample(t,x1,x2)<x)lo=t;else hi=t;}return sample((lo+hi)/2,y1,y2);};
+}
+// Solve x(t)=elapsed time before evaluating y(t), matching CSS timing curves.
+const bracketEase=cubicBezier(.56,0,.18,1);
+const pointEase=cubicBezier(.44,0,.20,1);
+const opacityEase=cubicBezier(.32,0,.48,1);
+function motionPose(ms){
+return{leftOffset:1.6*(1-bracketEase(ms/1450)),rightOffset:1.6*(1-bracketEase((ms-90)/1450)),leftOpacity:opacityEase(ms/430),rightOpacity:opacityEase((ms-90)/430),scale:.35+.65*pointEase((ms-480)/1150),pointOpacity:opacityEase((ms-350)/400)};
+}
+function renderMotion(ms,opacity=1){if(!moving)return;const p=motionPose(ms),{left,right,point,cx,cy}=moving;left.setAttribute('transform',`translate(${-p.leftOffset} 0)`);right.setAttribute('transform',`translate(${p.rightOffset} 0)`);left.setAttribute('opacity',p.leftOpacity*opacity);right.setAttribute('opacity',p.rightOpacity*opacity);point.setAttribute('transform',`translate(${cx} ${cy}) scale(${p.scale}) translate(${-cx} ${-cy})`);point.setAttribute('opacity',p.pointOpacity*opacity);}
+function scheduleLoop(){
+if(!$('loopMotion').checked||reducedMotion.matches||mode!=='motion'||motionTimer!==null)return;
+motionTimer=setTimeout(()=>{motionTimer=null;motionPhase='exit';let start=null;
+function fade(now){if(start===null)start=now;const progress=clamp((now-start)/400);renderMotion(MOTION_DURATION,1-opacityEase(progress));if(progress<1)motionFrame=requestAnimationFrame(fade);else{motionFrame=null;motionPhase='blank';motionTimer=setTimeout(playMotion,180);}}
+motionFrame=requestAnimationFrame(fade);},1100);
+}
+function playMotion(){
+stopMotion();if(mode!=='motion'||!moving)return;
+if(reducedMotion.matches){renderMotion(MOTION_DURATION);motionPhase='hold';$('motionStatus').textContent='已定格 · 减少动态效果';return;}
+motionPhase='enter';$('motionStatus').textContent='2 秒 · 播放中';renderMotion(0);let start=null;
+function tick(now){if(start===null)start=now;const elapsed=Math.min(MOTION_DURATION,now-start);renderMotion(elapsed);if(elapsed<MOTION_DURATION){motionFrame=requestAnimationFrame(tick);}else{motionFrame=null;motionPhase='hold';$('motionStatus').textContent='2 秒 · 已落定';scheduleLoop();}}
+motionFrame=requestAnimationFrame(tick);
+}
+function animatedMark(p,scale){const mark=element('g',{transform:`scale(${scale})`,id:'logoMark'});const base=buildMark(p,'var(--mark)');const paths=base.children[0].getAttribute('d').split('Z ');const left=element('path',{d:paths[0]+'Z',fill:'var(--mark)'}),right=element('path',{d:paths[1],fill:'var(--mark)'}),point=base.children[1];mark.append(left,right,point);moving={left,right,point,cx:p.cx,cy:p.cy};return mark;}
+function draw(){
+stopMotion();moving=null;
+const p=geometry(+$('stroke').value,+$('point').value,+$('gap').value);current=p;
+['stroke','point','gap'].forEach(id=>$(id+'Val').textContent=fmt(+$(id).value)+'u');
+$('heightFormula').textContent='s + 2v = '+fmt(p.H)+'u';$('armFormula').textContent='v + t/2 = '+fmt(p.a)+'u';$('widthFormula').textContent='2a + 2g + s = '+fmt(p.W)+'u';$('radiusFormula').textContent='s / √2 = '+fmt(p.s/Math.SQRT2)+'u';$('ratio').textContent='W:H = '+fmt(p.W)+':'+fmt(p.H)+' / t:s:g = '+fmt(p.t)+':'+fmt(p.s)+':'+fmt(p.g);
+const svg=$('drawing');svg.replaceChildren();const U=40,pad=96,sw=p.W*U+pad*2,sh=p.H*U+pad*2;svg.setAttribute('viewBox',`0 0 ${sw} ${sh}`);svg.append(element('title',{},'Duskbit 中括号与暮橙方点：比例构造'));
+const drawing=element('g',{transform:`translate(${pad} ${pad})`});svg.append(drawing);const mark=mode==='motion'?animatedMark(p,U):buildMark(p,'var(--mark)',U);mark.setAttribute('id','logoMark');drawing.append(mark);
+const guides=element('g',{id:'guideLayer'});drawing.append(guides);
+const line=(x1,y1,x2,y2,cls='construction')=>guides.append(element('line',{x1:x1*U,y1:y1*U,x2:x2*U,y2:y2*U,class:cls}));
+const circle=(x,y,r,cls='construction')=>guides.append(element('circle',{cx:x*U,cy:y*U,r:r*U,class:cls}));
+const txt=(x,y,label,cls='svg-label',anchor='middle')=>guides.append(element('text',{x:x*U,y:y*U,class:cls,'text-anchor':anchor},label));
+const {t,s,g,v,a,H,W,qx,qy,cx,cy}=p;
+// The circles below have computed tangencies, rather than hand-placed decorative positions.
+circle(cx,cy,H/2); // Overall-height circle: tangent to top and bottom of the mark.
+circle(cx,cy,s/2,'construction strong'); // Incircle: tangent to all four square edges.
+circle(cx,cy,s/Math.SQRT2,'construction strong'); // Circumcircle: passes through square corners.
+circle(a+g/2,cy,g/2);circle(W-a-g/2,cy,g/2); // Gap circles: tangent to arm-tip and square-edge datum lines.
+circle(cx,v/2,v/2);circle(cx,H-v/2,v/2); // Vertical whitespace stays independent of horizontal gap.
+circle(t/2,cy,t/2);circle(W-t/2,cy,t/2); // Stroke circles: tangent to both stem edges.
+circle(a-t/2,t/2,t/2);circle(W-a+t/2,H-t/2,t/2);
+line(-.5,cy,W+.5,cy,'construction axis');line(cx,-.5,cx,H+.5,'construction axis');
+[0,t,a,qx,qx+s,W-a,W-t,W].forEach(x=>line(x,-.28,x,H+.28));
+[0,t,v,v+s,H-t,H].forEach(y=>line(-.28,y,W+.28,y));
+line(qx,qy,qx+s,qy+s,'construction strong');
+const dims=element('g',{id:'dimensionLayer'});guides.append(dims);
+function dim(x1,y1,x2,y2,label,vertical=false){const l=(ax,ay,bx,by)=>dims.append(element('line',{x1:ax*U,y1:ay*U,x2:bx*U,y2:by*U,class:'dimensions'}));l(x1,y1,x2,y2);const tick=.1;if(vertical){l(x1-tick,y1,x1+tick,y1);l(x2-tick,y2,x2+tick,y2);}else{l(x1,y1-tick,x1,y1+tick);l(x2,y2-tick,x2,y2+tick);}dims.append(element('text',{x:(vertical?x1-.18:(x1+x2)/2)*U,y:(vertical?(y1+y2)/2:y1-.16)*U,class:'svg-label','text-anchor':vertical?'end':'middle','dominant-baseline':vertical?'middle':'auto'},label));}
+dim(0,-.8,W,-.8,'W = '+fmt(W)+'u');dim(-.75,0,-.75,H,'H = '+fmt(H)+'u',true);
+dim(qx,H+.6,qx+s,H+.6,'s = '+fmt(s)+'u');dim(a,H+1.15,qx,H+1.15,'g = '+fmt(g)+'u');dim(0,H+.6,a,H+.6,'a = '+fmt(a)+'u');
+txt(t/2,cy+.7,'t','guidetag');txt(a+g/2,cy-.12,'g');txt(cx,v/2+.1,'v');
+dims.style.display=$('dimensions').checked?'':'none';guides.style.display=mode==='construction'?'':'none';
+$('stage').classList.toggle('dark',$('dark').checked);
+$('samples').replaceChildren();[16,24,32,64].forEach(height=>{const box=document.createElement('div');box.className='sample';const icon=element('svg',{viewBox:`0 0 ${W} ${H}`,height,width:height*W/H,role:'img','aria-label':height+' 像素高度标志'});icon.append(buildMark(p));const label=document.createElement('span');label.textContent='H '+height+' px';box.append(icon,label);$('samples').append(box);});
+$('motionControls').hidden=mode!=='motion';$('constructionLegend').hidden=mode!=='construction';$('dimensions').disabled=mode!=='construction';if(mode==='motion')playMotion();
+}
+function setMode(value){mode=value;['motion','construction','clean'].forEach(key=>{const b=$(key+'View');b.classList.toggle('active',key===value);b.setAttribute('aria-pressed',String(key===value));});draw();}
+function download(blob,name){const url=URL.createObjectURL(blob),a=document.createElement('a');a.href=url;a.download=name;document.body.append(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(url),1000);$('status').textContent='已导出 '+name;}
+$('export').addEventListener('click',()=>{const p=current,svg=element('svg',{xmlns:ns,viewBox:`0 0 ${fmt(p.W)} ${fmt(p.H)}`,width:fmt(p.W*100),height:fmt(p.H*100)});svg.append(element('title',{},'Duskbit'),element('desc',{},'Orange bit #F26B3A. '+$('ratio').textContent),buildMark(p,$('dark').checked?'#F4F2ED':'#222222'));download(new Blob([new XMLSerializer().serializeToString(svg)],{type:'image/svg+xml'}),'duskbit-logo.svg');});
+$('exportGuides').addEventListener('click',()=>{const svg=$('drawing').cloneNode(true);const exportMark=svg.querySelector('#logoMark');exportMark.replaceChildren(...buildMark(current,'var(--mark)').children);svg.setAttribute('xmlns',ns);const dark=$('dark').checked;const palette={'--mark':dark?'#F4F2ED':'#222222','--label':dark?'#A7B6C0':'#687880','--guide':dark?'#8BAABD':'#708BA0','--orange':'#F26B3A'};svg.querySelectorAll('*').forEach(el=>{for(const attr of ['fill','stroke']){const v=el.getAttribute(attr);if(v&&v.startsWith('var('))el.setAttribute(attr,palette[v.slice(4,-1)]);}if(el.classList.contains('construction')){el.setAttribute('fill','none');el.setAttribute('stroke',el.classList.contains('strong')?'#F26B3A':palette['--guide']);el.setAttribute('stroke-width','1');el.setAttribute('opacity',el.classList.contains('axis')?'.35':'.48');if(el.classList.contains('axis'))el.setAttribute('stroke-dasharray','5 6');}if(el.classList.contains('dimensions')){el.setAttribute('stroke',palette['--label']);el.setAttribute('stroke-width','1');el.setAttribute('fill','none');}if(el.tagName==='text'){el.setAttribute('fill',el.classList.contains('guidetag')?'#F26B3A':palette['--label']);el.setAttribute('font-family','monospace');el.setAttribute('font-size','12');}});svg.querySelector('#guideLayer').style.display='';svg.querySelector('#dimensionLayer').style.display='';svg.insertBefore(element('rect',{width:'100%',height:'100%',fill:dark?'#191919':'#FAF9F6'}),svg.firstChild);download(new Blob([new XMLSerializer().serializeToString(svg)],{type:'image/svg+xml'}),'duskbit-construction.svg');});
+['stroke','point','gap'].forEach(id=>$(id).addEventListener('input',draw));['dimensions','dark'].forEach(id=>$(id).addEventListener('change',draw));$('motionView').addEventListener('click',()=>setMode('motion'));$('replay').addEventListener('click',playMotion);$('loopMotion').addEventListener('change',()=>{if($('loopMotion').checked){if(motionPhase==='hold')scheduleLoop();}else if(motionPhase!=='enter'){stopMotion();renderMotion(MOTION_DURATION);motionPhase='hold';}});reducedMotion.addEventListener('change',()=>{if(mode==='motion')playMotion();});$('constructionView').addEventListener('click',()=>setMode('construction'));$('cleanView').addEventListener('click',()=>setMode('clean'));$('reset').addEventListener('click',()=>{$('stroke').value=1;$('point').value=3;$('gap').value=0.75;draw();$('status').textContent='已恢复 t:s:g = 1:3:0.75';});draw();
+})();
+</script>
+</body></html>

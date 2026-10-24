@@ -1,0 +1,56 @@
+.cursor {
+  position: fixed;
+  top: 0;
+  left: 0;
+  pointer-events: none;
+  z-index: 99999;
+  display: none;
+}
+
+@media (pointer: fine) {
+  .cursor { display: block; }
+}
+
+@media (pointer: coarse) {
+  .cursor { display: none; }
+}
+
+.cursor-h {
+  position: absolute;
+  width: 16px;
+  height: 1px;
+  background: var(--ink);
+  top: 0;
+  left: -8px;
+}
+
+.cursor-v {
+  position: absolute;
+  width: 1px;
+  height: 16px;
+  background: var(--ink);
+  top: -8px;
+  left: 0;
+}
+
+.cursor-bit {
+  position: absolute;
+  width: 3px;
+  height: 3px;
+  background: var(--accent);
+  top: -1.5px;
+  left: -1.5px;
+}
+
+.cursor-coord {
+  position: absolute;
+  top: 10px;
+  left: 6px;
+  font-family: var(--mono);
+  font-size: 8px;
+  line-height: 12px;
+  letter-spacing: 0.1em;
+  color: var(--muted);
+  white-space: nowrap;
+  font-variant-numeric: tabular-nums;
+}

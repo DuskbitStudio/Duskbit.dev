@@ -1,0 +1,990 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Duskbit · 暮点工作室 — 独立软件</title>
+<meta name="description" content="暮点工作室（Duskbit）做独立的软件工具：小体量、单一用途、可以长期维护。">
+<style>
+/* ============================================================
+   DUSKBIT / DENSE EDITORIAL
+   Scale: base unit u = 6px. Type ramp 10 / 11 / 12.5 / 15 / 17 /
+   22 / 30 / clamp(46…102). Vertical rhythm = multiples of 12u.
+   Grid: 12 columns, 20px gutters, 36px page margin.
+   ============================================================ */
+
+:root{
+  --bg:#ffffff;
+  --bg2:#f2f2f3;
+  --ink:#111113;
+  --ink2:#4a4a52;
+  --ink3:#74747c;
+  --rule:#dcdcdf;
+  --rule2:#b4b4bb;
+  --accent:#F26B3A;
+  --pad:36px;
+  --gap:20px;
+  --maxw:1560px;
+  --sans:-apple-system,BlinkMacSystemFont,"Segoe UI","Helvetica Neue",Helvetica,Arial,"PingFang SC","Hiragino Sans GB","Microsoft YaHei",sans-serif;
+  --mono:ui-monospace,"SF Mono",SFMono-Regular,Menlo,"Cascadia Mono","Roboto Mono",Consolas,"Liberation Mono",monospace;
+  color-scheme:light;
+}
+
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --bg:#0b0b0c;
+    --bg2:#151517;
+    --ink:#ededf0;
+    --ink2:#a5a5ad;
+    --ink3:#7e7e88;
+    --rule:#2a2a2e;
+    --rule2:#3f3f46;
+    color-scheme:dark;
+  }
+}
+
+:root[data-theme="dark"]{
+  --bg:#0b0b0c;
+  --bg2:#151517;
+  --ink:#ededf0;
+  --ink2:#a5a5ad;
+  --ink3:#7e7e88;
+  --rule:#2a2a2e;
+  --rule2:#3f3f46;
+  color-scheme:dark;
+}
+
+*,*::before,*::after{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%;text-size-adjust:100%;scroll-behavior:smooth}
+body{
+  margin:0;
+  background:var(--bg);
+  color:var(--ink);
+  font-family:var(--sans);
+  font-size:15px;
+  line-height:1.72;
+  -webkit-font-smoothing:antialiased;
+  -moz-osx-font-smoothing:grayscale;
+  transition:background-color .2s ease,color .2s ease;
+}
+h1,h2,h3,p,dl,dd,dt,figure{margin:0}
+a{color:inherit;text-decoration:none}
+button{font:inherit;color:inherit;background:none;border:0;padding:0;cursor:pointer}
+svg{display:block}
+::selection{background:var(--accent);color:#fff}
+:focus-visible{outline:2px solid var(--accent);outline-offset:3px}
+
+.wrap{max-width:var(--maxw);margin:0 auto;padding:0 var(--pad)}
+.grid{display:grid;grid-template-columns:repeat(12,minmax(0,1fr));column-gap:var(--gap)}
+
+/* ---------- micro label ---------- */
+.k{
+  font-family:var(--mono);
+  font-size:10px;
+  line-height:1.4;
+  letter-spacing:.16em;
+  text-transform:uppercase;
+  color:var(--ink3);
+  display:block;
+}
+
+/* ============================================================
+   MASTHEAD
+   ============================================================ */
+.strip{
+  display:flex;
+  align-items:center;
+  height:34px;
+  overflow:hidden;
+  border-bottom:1px solid var(--rule);
+  font-family:var(--mono);
+  font-size:10px;
+  letter-spacing:.12em;
+  text-transform:uppercase;
+  color:var(--ink3);
+  white-space:nowrap;
+}
+.strip__c{padding:0 16px;border-left:1px solid var(--rule)}
+.strip__c:first-child{padding-left:0;border-left:0}
+.strip__c--r{margin-left:auto;border-left:0;padding-right:0;color:var(--ink2)}
+
+.bar{
+  display:flex;
+  align-items:center;
+  gap:32px;
+  height:78px;
+}
+.brand{display:flex;align-items:center;gap:12px}
+.brand__mark{height:20px;width:auto;color:var(--ink)}
+.brand__name{font-size:17px;font-weight:600;letter-spacing:-.01em}
+.brand__sep{width:1px;height:13px;background:var(--rule)}
+.brand__cn{font-size:12px;letter-spacing:.08em;color:var(--ink2)}
+
+.nav{margin-left:auto;display:flex;align-items:center;gap:30px}
+.nav__a{
+  display:inline-flex;align-items:baseline;gap:7px;
+  padding:5px 0;
+  font-size:13px;letter-spacing:.04em;
+  border-bottom:1px solid transparent;
+  transition:border-color .15s ease;
+}
+.nav__a:hover{border-bottom-color:var(--accent)}
+.nav__n{font-family:var(--mono);font-size:9.5px;letter-spacing:.08em;color:var(--ink3)}
+
+.themer{display:flex;border:1px solid var(--rule);margin-left:2px}
+.themer button{
+  font-family:var(--mono);
+  font-size:10px;
+  letter-spacing:.08em;
+  color:var(--ink3);
+  padding:5px 9px;
+  border-left:1px solid var(--rule);
+  transition:background-color .15s ease,color .15s ease;
+}
+.themer button:first-child{border-left:0}
+.themer button:hover{color:var(--ink)}
+.themer button[aria-pressed="true"]{background:var(--ink);color:var(--bg)}
+
+/* ============================================================
+   HERO
+   ============================================================ */
+.hero{padding-top:60px}
+.hero .grid{row-gap:0}
+
+.rail{grid-column:1/2;grid-row:1/3;border-right:1px solid var(--rule);padding-right:14px}
+.rail__in{position:sticky;top:96px;display:flex;flex-direction:column;gap:18px;align-items:flex-start}
+.rail__no{font-family:var(--mono);font-size:11px;letter-spacing:.06em;color:var(--ink2)}
+.rail__v{
+  writing-mode:vertical-rl;
+  font-size:10px;
+  letter-spacing:.2em;
+  color:var(--ink3);
+  line-height:1.4;
+}
+
+.hero__lead{grid-column:2/10;padding-top:6px}
+.display{
+  margin-top:26px;
+  font-size:clamp(46px,7.3vw,102px);
+  line-height:1.02;
+  letter-spacing:-.035em;
+  font-weight:600;
+  text-wrap:balance;
+}
+.display .ind{display:block;margin-left:1em}
+
+.hero__deck{
+  grid-column:2/7;
+  margin-top:44px;
+  font-size:17px;
+  line-height:1.78;
+  color:var(--ink2);
+  letter-spacing:.005em;
+}
+
+.hero__pr{grid-column:7/10;margin-top:46px}
+.pr{
+  display:flex;gap:12px;
+  padding:9px 0 10px;
+  border-top:1px solid var(--rule);
+  font-size:12.5px;line-height:1.5;color:var(--ink2);
+}
+.pr:last-child{border-bottom:1px solid var(--rule)}
+.pr b{font-family:var(--mono);font-weight:400;font-size:10px;color:var(--ink3);padding-top:2px}
+
+.hero__aside{
+  grid-column:10/13;
+  grid-row:1/3;
+  align-self:start;
+  border-left:1px solid var(--rule);
+  padding-left:22px;
+  margin-top:6px;
+}
+.abstract{margin-top:12px;font-size:13px;line-height:1.75;color:var(--ink2)}
+
+.meta{margin-top:22px;border-top:1px solid var(--rule);font-size:12px}
+.meta > div{display:flex;justify-content:space-between;align-items:baseline;gap:14px;padding:7px 0;border-bottom:1px solid var(--rule)}
+.meta dt{font-size:11px;letter-spacing:.06em;color:var(--ink3);white-space:nowrap}
+.meta dd{font-family:var(--mono);font-size:11px;text-align:right;color:var(--ink);letter-spacing:.01em}
+
+.hero__strip{grid-column:1/-1;margin-top:72px;border-top:1px solid var(--rule2);border-bottom:1px solid var(--rule)}
+.strip4{display:grid;grid-template-columns:repeat(4,minmax(0,1fr))}
+.strip4 > div{padding:15px 20px 16px;border-left:1px solid var(--rule)}
+.strip4 > div:first-child{padding-left:0;border-left:0}
+.strip4 .v{display:block;margin-top:5px;font-size:13px;letter-spacing:.02em;color:var(--ink)}
+
+/* ============================================================
+   MARK / SPECIMEN PLATE
+   ============================================================ */
+.mark{padding-top:72px}
+.mark__head{grid-column:1/7;padding-top:2px}
+.mark__h{font-size:22px;font-weight:500;line-height:1.45;letter-spacing:-.01em;margin-top:14px}
+
+.plate{grid-column:1/7;margin-top:36px}
+.plate__frame{position:relative;background:var(--bg2);padding:0 48px 40px 44px}
+.plate__tag{
+  font-family:var(--mono);font-size:10px;letter-spacing:.14em;
+  color:var(--ink3);padding:14px 0 0;display:block;
+}
+.stage{position:relative;padding-top:46px;padding-left:34px}
+.stage::before{
+  content:"";position:absolute;left:34px;right:0;top:46px;bottom:0;pointer-events:none;
+  background:
+    linear-gradient(to right,transparent calc(50% - .5px),var(--rule) calc(50% - .5px),var(--rule) calc(50% + .5px),transparent calc(50% + .5px)),
+    linear-gradient(to bottom,transparent calc(50% - .5px),var(--rule) calc(50% - .5px),var(--rule) calc(50% + .5px),transparent calc(50% + .5px));
+}
+.plate__mark{position:relative;width:100%;height:auto;color:var(--ink)}
+
+.dim--w{
+  position:absolute;top:20px;left:34px;right:0;height:1px;background:var(--rule2);
+  display:flex;align-items:center;justify-content:center;
+}
+.dim--w i{position:absolute;top:-4px;width:1px;height:9px;background:var(--rule2)}
+.dim--w i:first-child{left:0}
+.dim--w i:last-child{right:0}
+.dim--w b{
+  position:relative;background:var(--bg2);padding:0 8px;
+  font:400 10px/1 var(--mono);letter-spacing:.06em;color:var(--ink3);
+}
+.dim--h{
+  position:absolute;left:16px;top:46px;bottom:0;width:1px;background:var(--rule2);
+  display:flex;align-items:center;justify-content:center;
+}
+.dim--h i{position:absolute;left:-4px;height:1px;width:9px;background:var(--rule2)}
+.dim--h i:first-child{top:0}
+.dim--h i:last-child{bottom:0}
+.dim--h b{
+  position:relative;background:var(--bg2);padding:8px 0;
+  writing-mode:vertical-rl;
+  font:400 10px/1 var(--mono);letter-spacing:.06em;color:var(--ink3);
+}
+
+.plate figcaption{
+  font-family:var(--mono);font-size:10px;letter-spacing:.08em;color:var(--ink3);
+  padding-top:10px;border-top:1px solid var(--rule);margin-top:12px;
+  display:flex;justify-content:space-between;gap:12px;
+}
+
+.specs{grid-column:7/13;padding-left:0;margin-top:0;padding-top:2px}
+.specs__p{font-size:14px;line-height:1.8;color:var(--ink2);margin-top:14px;max-width:34em}
+
+.spectab{margin-top:32px;border-top:1px solid var(--rule2)}
+.spectab > div{display:grid;grid-template-columns:1fr auto;gap:24px;align-items:baseline;padding:9px 0;border-bottom:1px solid var(--rule)}
+.spectab dt{font-size:12px;letter-spacing:.04em;color:var(--ink2)}
+.spectab dt span{font-family:var(--mono);font-size:9.5px;letter-spacing:.14em;text-transform:uppercase;color:var(--ink3);margin-left:8px}
+.spectab dd{font-family:var(--mono);font-size:11.5px;color:var(--ink);text-align:right;letter-spacing:.02em}
+
+/* ============================================================
+   SECTIONS
+   ============================================================ */
+.sec{padding-top:88px;scroll-margin-top:24px}
+.sec__head{
+  display:grid;
+  grid-template-columns:64px auto 1fr auto;
+  align-items:baseline;
+  gap:16px;
+  border-top:1px solid var(--rule2);
+  padding-top:11px;
+  margin-bottom:44px;
+}
+.sec__no{font-family:var(--mono);font-size:11px;letter-spacing:.06em;color:var(--ink3)}
+.sec__title{font-size:30px;font-weight:500;line-height:1.15;letter-spacing:-.01em}
+.sec__en{font-family:var(--mono);font-size:10px;letter-spacing:.18em;text-transform:uppercase;color:var(--ink3);padding-bottom:3px}
+.sec__meta{font-family:var(--mono);font-size:10px;letter-spacing:.06em;color:var(--ink3);text-align:right;padding-bottom:4px}
+
+.sec__body{display:grid;grid-template-columns:repeat(12,minmax(0,1fr));column-gap:var(--gap)}
+.sec__body > .rail2{
+  grid-column:1/2;
+  border-right:1px solid var(--rule);
+  padding-right:14px;
+}
+.sec__body > .rail2 .rail__in{top:96px}
+.sec__body > .main{grid-column:2/12}
+.sec__body > .mnote{
+  grid-column:12/13;
+  padding-left:12px;
+  border-left:1px solid var(--rule);
+}
+.mnote__v{
+  writing-mode:vertical-rl;
+  font-size:10px;
+  letter-spacing:.16em;
+  color:var(--ink3);
+  line-height:1.5;
+  position:sticky;
+  top:96px;
+  max-height:70vh;
+}
+
+.main-grid{display:grid;grid-template-columns:repeat(10,minmax(0,1fr));column-gap:var(--gap)}
+
+/* ============================================================
+   PRODUCTS
+   ============================================================ */
+.intro{grid-column:1/6}
+.intro p{font-size:15px;line-height:1.8;color:var(--ink2)}
+.release{grid-column:6/10;border-left:1px solid var(--rule);padding-left:20px}
+.release p{margin-top:10px;font-size:12.5px;line-height:1.7;color:var(--ink2)}
+
+.ptable{grid-column:1/-1;margin-top:52px}
+
+.phead{
+  display:grid;grid-template-columns:repeat(10,minmax(0,1fr));column-gap:var(--gap);
+  border-top:1px solid var(--rule2);
+  border-bottom:1px solid var(--rule2);
+  padding:8px 0;
+}
+.phead span{
+  font-family:var(--mono);font-size:9.5px;letter-spacing:.16em;
+  text-transform:uppercase;color:var(--ink3);
+}
+
+.prow{
+  display:grid;grid-template-columns:repeat(10,minmax(0,1fr));column-gap:var(--gap);
+  align-items:baseline;
+  padding:17px 0 19px;
+  border-bottom:1px solid var(--rule);
+  transition:background-color .15s ease;
+}
+.prow:hover{background:var(--bg2)}
+.prow:hover .code{color:var(--accent)}
+
+.c-no{grid-column:1/2;font-family:var(--mono);font-size:11px;color:var(--ink3);letter-spacing:.04em;padding-top:2px}
+.c-name{grid-column:2/4}
+.code{font-family:var(--mono);font-size:14px;letter-spacing:.06em;color:var(--ink);transition:color .15s ease}
+.cname-cn{display:block;font-size:11.5px;letter-spacing:.04em;color:var(--ink3);margin-top:3px}
+.c-cat{grid-column:4/5;font-size:12px;letter-spacing:.03em;color:var(--ink2);padding-top:2px}
+.c-desc{grid-column:5/9;font-size:13px;line-height:1.7;color:var(--ink2)}
+.c-st{grid-column:9/11;justify-self:end;padding-top:2px}
+
+.st{display:inline-flex;align-items:center;gap:7px;font-size:11.5px;letter-spacing:.05em;color:var(--ink2);white-space:nowrap}
+.st i{display:block;width:6px;height:6px;border:1px solid var(--ink3);background:transparent}
+.st--on i{background:var(--accent);border-color:var(--accent)}
+.st--hold i{background:var(--ink3);border-color:var(--ink3)}
+
+sup.fn{font-size:0;line-height:0}
+sup.fn a{
+  font-family:var(--mono);font-size:9px;letter-spacing:0;
+  vertical-align:super;color:var(--accent);
+  padding-left:2px;
+}
+
+.notes{
+  grid-column:1/9;
+  margin-top:34px;padding-top:13px;border-top:1px solid var(--rule);
+  display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:var(--gap);
+  font-size:11px;line-height:1.65;color:var(--ink2);
+}
+.notes div{display:flex;gap:7px}
+.notes b{font-family:var(--mono);font-weight:400;color:var(--accent);font-size:9.5px;padding-top:1px}
+
+.pfoot{
+  grid-column:1/-1;
+  margin-top:34px;padding-top:13px;border-top:1px solid var(--rule);
+  display:flex;justify-content:flex-start;align-items:baseline;gap:40px;
+  font-size:11px;line-height:1.65;color:var(--ink3);
+}
+.pfoot strong{font-weight:400;color:var(--ink);font-size:11.5px;letter-spacing:.02em}
+
+/* ============================================================
+   ABOUT
+   ============================================================ */
+.astatement{
+  grid-column:1/9;
+  font-size:clamp(24px,2.7vw,38px);
+  line-height:1.36;
+  letter-spacing:-.02em;
+  font-weight:500;
+  margin-bottom:56px;
+  text-wrap:balance;
+}
+
+.ablocks{
+  grid-column:1/8;
+  display:grid;
+  grid-template-columns:repeat(2,minmax(0,1fr));
+  column-gap:var(--gap);
+  align-content:start;
+}
+.ablock{border-top:1px solid var(--rule);padding-top:12px;margin-bottom:30px}
+.ablock h3{
+  display:flex;align-items:baseline;gap:10px;
+  font-size:13px;font-weight:500;letter-spacing:.04em;margin-bottom:8px;
+}
+.ablock h3 span{font-family:var(--mono);font-size:10px;color:var(--ink3);letter-spacing:.06em}
+.ablock p{font-size:13.5px;line-height:1.82;color:var(--ink2)}
+
+.facts{
+  grid-column:8/11;
+  border-left:1px solid var(--rule);
+  padding-left:20px;
+  align-self:start;
+}
+.facts .k{margin-bottom:12px}
+.facts dl{border-top:1px solid var(--rule2)}
+.facts dl > div{display:grid;grid-template-columns:1fr;gap:1px;padding:8px 0;border-bottom:1px solid var(--rule)}
+.facts dt{font-size:10.5px;letter-spacing:.06em;color:var(--ink3)}
+.facts dd{font-size:12px;color:var(--ink);letter-spacing:.01em;line-height:1.55}
+.facts dd.mono{font-family:var(--mono);font-size:11px}
+.facts__note{margin-top:14px;font-size:10.5px;line-height:1.6;color:var(--ink3)}
+
+.gloss{
+  grid-column:1/-1;
+  margin-top:2px;
+  border-top:1px solid var(--rule2);
+  padding-top:12px;
+}
+.gloss .k{margin-bottom:8px}
+.gloss dl{border-bottom:1px solid var(--rule)}
+.gloss dl > div{
+  display:grid;grid-template-columns:104px 1fr;gap:16px;
+  padding:8px 0;border-top:1px solid var(--rule);
+  align-items:baseline;
+}
+.gloss dl > div:first-child{border-top:0}
+.gloss dt{font-size:11px;letter-spacing:.08em;color:var(--ink)}
+.gloss dd{font-size:11.5px;line-height:1.7;color:var(--ink2)}
+
+/* ============================================================
+   FOOTER
+   ============================================================ */
+.foot{margin-top:96px;border-top:1px solid var(--rule2);padding:38px 0 26px}
+.foot__top{display:flex;align-items:center;justify-content:space-between;gap:24px;flex-wrap:wrap}
+.foot__brand{display:flex;align-items:center;gap:13px}
+.foot__brand svg{height:22px;width:auto;color:var(--ink)}
+.foot__brand b{font-size:16px;font-weight:600;letter-spacing:-.01em}
+.foot__brand span{font-size:11.5px;color:var(--ink3);letter-spacing:.08em}
+.foot__top a.up{
+  font-family:var(--mono);font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:var(--ink3);
+  border-bottom:1px solid transparent;padding-bottom:2px;
+}
+.foot__top a.up:hover{color:var(--ink);border-bottom-color:var(--rule2)}
+
+.foot__cols{display:grid;grid-template-columns:repeat(12,minmax(0,1fr));column-gap:var(--gap);margin-top:44px}
+.fcol{grid-column:span 3;border-top:1px solid var(--rule);padding-top:12px}
+.fcol .k{margin-bottom:10px}
+.fcol ul{list-style:none;margin:0;padding:0;font-size:12px;line-height:1.9;color:var(--ink2)}
+.fcol li{display:flex;justify-content:space-between;gap:10px;border-bottom:1px solid var(--rule);padding:3px 0}
+.fcol li b{font-family:var(--mono);font-weight:400;color:var(--ink);font-size:11px;letter-spacing:.02em}
+.fcol li span{color:var(--ink3);font-size:10.5px}
+
+.foot__base{
+  display:flex;justify-content:space-between;gap:20px;flex-wrap:wrap;
+  margin-top:40px;padding-top:12px;border-top:1px solid var(--rule2);
+  font-family:var(--mono);font-size:10px;letter-spacing:.08em;color:var(--ink3);
+}
+
+/* ============================================================
+   RESPONSIVE
+   ============================================================ */
+@media (max-width:1180px){
+  :root{--pad:28px;--gap:18px}
+  .hero__deck{grid-column:2/6;font-size:16px}
+  .hero__pr{grid-column:6/10}
+  .hero__aside{padding-left:18px}
+  .meta dd{font-size:10.5px}
+  .sec__body > .main{grid-column:2/12}
+}
+
+@media (max-width:980px){
+  :root{--pad:24px;--gap:16px}
+  .strip__c:nth-child(3){display:none}
+  .hero__aside{grid-column:9/13;grid-row:2/3;border-left:0;border-top:1px solid var(--rule);padding-left:0;padding-top:16px;margin-top:36px}
+  .hero__lead{grid-column:2/10}
+  .hero__deck{grid-column:2/7}
+  .mark__head{grid-column:1/13}
+  .plate{grid-column:1/7}
+  .specs{grid-column:7/13}
+  .astatement{grid-column:1/9}
+  .facts{grid-column:8/12}
+  .sec__body > .mnote{display:none}
+}
+
+@media (max-width:820px){
+  .grid{display:block}
+  .sec__body{display:block}
+  .main-grid{display:block}
+  .rail{display:none}
+  .sec__body > .rail2{display:none}
+
+  .hero__lead,.hero__deck,.hero__pr,.hero__aside{margin-top:32px}
+  .hero__lead{margin-top:0}
+  .hero__aside{border-top:1px solid var(--rule);padding-top:18px;margin-top:44px}
+  .hero__strip{margin-top:52px}
+
+  .mark{padding-top:64px}
+  .mark__head{max-width:none}
+  .plate{margin-top:28px}
+  .specs{margin-top:36px;padding-left:0}
+
+  .ptable{margin-top:40px}
+  .phead{display:none}
+  .prow{
+    grid-template-columns:44px 1fr auto;
+    column-gap:12px;
+    row-gap:6px;
+    padding:15px 0 17px;
+  }
+  .c-no{grid-column:1;grid-row:1}
+  .c-name{grid-column:2;grid-row:1}
+  .c-st{grid-column:3;grid-row:1;justify-self:end}
+  .c-cat{grid-column:2/4;grid-row:2;padding-top:0}
+  .c-desc{grid-column:1/4;grid-row:3;margin-top:4px}
+  .notes{grid-template-columns:1fr;gap:10px}
+  .pfoot{margin-top:24px;flex-direction:column;gap:6px;align-items:flex-start}
+  .intro,.release{grid-column:auto}
+  .release{border-left:0;border-top:1px solid var(--rule);padding-left:0;padding-top:14px;margin-top:24px}
+
+  .astatement{margin-bottom:40px}
+  .ablocks{grid-template-columns:1fr}
+  .ablock{margin-bottom:26px}
+  .facts{grid-column:auto;border-left:0;padding-left:0;border-top:1px solid var(--rule2);padding-top:16px;margin-top:8px}
+
+  .foot__cols{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:28px 20px}
+  .fcol{grid-column:auto}
+  .foot{margin-top:72px}
+}
+
+@media (max-width:640px){
+  .gloss dl > div{grid-template-columns:96px 1fr;gap:12px}
+  :root{--pad:20px}
+  .strip{height:30px;font-size:9px;letter-spacing:.1em}
+  .strip__c:nth-child(2),.strip__c:nth-child(3){display:none}
+  .strip__c:first-child{
+    overflow:hidden;text-overflow:ellipsis;max-width:52%;flex:0 1 auto;
+  }
+  .strip__c--r{font-size:8.5px;letter-spacing:.08em}
+  .bar{height:66px;gap:14px}
+  .brand__cn,.brand__sep{display:none}
+  .brand{gap:10px}
+  .brand__mark{height:18px}
+  .brand__name{font-size:16px}
+  .nav{gap:16px}
+  .nav__n{display:none}
+  .themer button{padding:4px 7px;font-size:9.5px}
+  .hero{padding-top:40px}
+  .display{font-size:clamp(33px,10.4vw,50px);letter-spacing:-.02em;line-height:1.06}
+  .display .ind{margin-left:.34em}
+  .hero__deck{font-size:15.5px}
+  .strip4{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .strip4 > div{border-left:1px solid var(--rule);border-top:1px solid var(--rule);padding:12px 14px}
+  .strip4 > div:nth-child(odd){border-left:0;padding-left:0}
+  .strip4 > div:nth-child(-n+2){border-top:0}
+  .sec__head{grid-template-columns:40px 1fr auto;gap:12px}
+  .sec__en{display:none}
+  .sec__meta{grid-column:2/-1;text-align:left;margin-top:5px}
+  .sec__title{font-size:24px}
+  .plate__frame{padding:0 20px 28px 30px}
+  .stage{padding-left:22px;padding-top:40px}
+  .stage::before{left:22px;top:40px}
+  .dim--w{left:22px}
+  .dim--h{left:6px;top:40px}
+  .specs__p{font-size:13px}
+  .foot__cols{grid-template-columns:1fr}
+  .foot__brand span{display:none}
+}
+
+@media (prefers-reduced-motion:reduce){
+  *{transition:none!important;scroll-behavior:auto!important}
+}
+</style>
+</head>
+<body>
+
+<header class="mast">
+  <div class="wrap">
+    <div class="strip">
+      <span class="strip__c">DUSKBIT — 独立软件工作室</span>
+      <span class="strip__c">暮点工作室 · 官方站点</span>
+      <span class="strip__c">单页 / 双主题 / 无外部资源</span>
+      <span class="strip__c strip__c--r">草案 DRAFT 0.1</span>
+    </div>
+    <div class="bar">
+      <a class="brand" href="#top" aria-label="Duskbit 暮点工作室，返回顶部">
+        <svg class="brand__mark" viewBox="0 0 9.5 7" aria-hidden="true"><path fill="currentColor" d="M0 0H2.5V1H1V6H2.5V7H0Z M9.5 0H7V1H8.5V6H7V7H9.5Z"/><rect x="3.25" y="2" width="3" height="3" fill="#F26B3A"/></svg>
+        <span class="brand__name">Duskbit</span>
+        <span class="brand__sep" aria-hidden="true"></span>
+        <span class="brand__cn">暮点工作室</span>
+      </a>
+
+      <nav class="nav" aria-label="主导航">
+        <a class="nav__a" href="#products"><span class="nav__n">01</span>产品</a>
+        <a class="nav__a" href="#about"><span class="nav__n">02</span>关于</a>
+      </nav>
+
+      <div class="themer" role="group" aria-label="配色主题">
+        <button type="button" data-set="auto" aria-pressed="true">自动</button>
+        <button type="button" data-set="light" aria-pressed="false">明</button>
+        <button type="button" data-set="dark" aria-pressed="false">暗</button>
+      </div>
+    </div>
+  </div>
+</header>
+
+<main id="top">
+
+  <!-- ===================== HERO ===================== -->
+  <section class="hero" aria-labelledby="hero-title">
+    <div class="wrap">
+      <div class="grid">
+
+        <div class="rail">
+          <div class="rail__in">
+            <span class="rail__no">00</span>
+            <span class="rail__v">概述 — OVERVIEW</span>
+          </div>
+        </div>
+
+        <div class="hero__lead">
+          <span class="k">§ 00 — 概述 / OVERVIEW</span>
+          <h1 class="display" id="hero-title">工具应该<span class="ind">消失在工作里。</span></h1>
+        </div>
+
+        <aside class="hero__aside" aria-label="摘要与站点信息">
+          <span class="k">摘要 / ABSTRACT</span>
+          <p class="abstract">本页是工作室的工作说明，也是产品目录的草案：做什么、怎么做、哪些事不做。</p>
+          <dl class="meta">
+            <div><dt>前身</dt><dd>Feedra</dd></div>
+            <div><dt>域名</dt><dd>duskbit.dev</dd></div>
+            <div><dt>在制</dt><dd>若干，未定稿</dd></div>
+            <div><dt>联系</dt><dd>hello@duskbit.dev</dd></div>
+            <div><dt>状态</dt><dd>草案 0.1</dd></div>
+          </dl>
+        </aside>
+
+        <div class="hero__deck">
+          <p>暮点工作室做独立的软件工具：小体量、单一用途、可以长期维护。产品不试图成为平台，也不靠持续增长来证明自己。</p>
+        </div>
+
+        <div class="hero__pr">
+          <div class="pr"><b>01</b><span>先定范围，再写代码。</span></div>
+          <div class="pr"><b>02</b><span>默认值比选项重要。</span></div>
+          <div class="pr"><b>03</b><span>用不到的功能不保留。</span></div>
+        </div>
+
+        <div class="hero__strip">
+          <div class="strip4">
+            <div><span class="k">文档 / DOC</span><span class="v">单页 HTML</span></div>
+            <div><span class="k">主题 / THEME</span><span class="v">明 · 暗，跟随系统</span></div>
+            <div><span class="k">字体 / TYPE</span><span class="v">系统无衬线 + 等宽</span></div>
+            <div><span class="k">追踪 / TRACK</span><span class="v">无</span></div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- ===================== MARK ===================== -->
+  <section class="mark" aria-labelledby="mark-title">
+    <div class="wrap">
+      <div class="grid">
+
+        <div class="mark__head">
+          <span class="k">§ 00.1 — 标记 / THE MARK</span>
+          <h2 class="mark__h" id="mark-title">两个方括号，一个实心方块。</h2>
+        </div>
+
+        <figure class="plate">
+          <div class="plate__frame">
+            <span class="plate__tag">构造图 · CONSTRUCTION</span>
+            <div class="stage">
+              <span class="dim dim--w" aria-hidden="true"><i></i><b>9.5u</b><i></i></span>
+              <span class="dim dim--h" aria-hidden="true"><i></i><b>7u</b><i></i></span>
+              <svg class="plate__mark" viewBox="0 0 9.5 7" role="img" aria-label="Duskbit 标记：一对方括号之间有一个实心方块"><path fill="currentColor" d="M0 0H2.5V1H1V6H2.5V7H0Z M9.5 0H7V1H8.5V6H7V7H9.5Z"/><rect x="3.25" y="2" width="3" height="3" fill="#F26B3A"/></svg>
+            </div>
+          </div>
+          <figcaption><span>图 01 — 标记构造</span><span>单位 u = 1/96 in</span></figcaption>
+        </figure>
+
+        <div class="specs">
+          <span class="k">规格 / SPECIFICATION</span>
+          <p class="specs__p">标记只用一种颜色绘制，方块保留唯一的橙色。所有比例来自同一个单位 u：放大或缩小都不改变结构，也不依赖渐变、描边粗细或任何修饰。</p>
+
+          <dl class="spectab">
+            <div><dt>画布 <span>Canvas</span></dt><dd>9.5u × 7u</dd></div>
+            <div><dt>描边 <span>Stroke</span></dt><dd>1u</dd></div>
+            <div><dt>方块 <span>Bit</span></dt><dd>3u × 3u</dd></div>
+            <div><dt>间隙 <span>Gap</span></dt><dd>0.75u</dd></div>
+            <div><dt>颜色 <span>Color</span></dt><dd>currentColor + #F26B3A</dd></div>
+          </dl>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- ===================== PRODUCTS ===================== -->
+  <section class="sec" id="products" aria-labelledby="products-title">
+    <div class="wrap">
+
+      <div class="sec__head">
+        <span class="sec__no">§ 01</span>
+        <h2 class="sec__title" id="products-title">产品</h2>
+        <span class="sec__en">Products</span>
+        <span class="sec__meta">04 条目 · 02 草案 · 01 未开始 · 01 搁置</span>
+      </div>
+
+      <div class="sec__body">
+        <aside class="rail2">
+          <div class="rail__in">
+            <span class="rail__no">01</span>
+            <span class="rail__v">在产品，未定稿</span>
+          </div>
+        </aside>
+
+        <div class="main">
+          <div class="main-grid">
+
+            <div class="intro">
+              <p>以下条目是占位。它们描述正在考虑的范围，而不是已发布的产品；名称、能力与状态都可能在定稿前改变。工作室不公布发布日期。</p>
+            </div>
+
+            <div class="release">
+              <span class="k">发布 / RELEASE</span>
+              <p>范围写完才排期，排期只写在内部。没有可以对外承诺的日期时，就不给日期。</p>
+            </div>
+
+            <div class="ptable" role="table" aria-label="产品条目（占位）">
+
+              <div class="phead" role="row">
+                <span role="columnheader" style="grid-column:1/2">编号</span>
+                <span role="columnheader" style="grid-column:2/4">项目</span>
+                <span role="columnheader" style="grid-column:4/5">类别</span>
+                <span role="columnheader" style="grid-column:5/9">范围</span>
+                <span role="columnheader" style="grid-column:9/11;text-align:right">状态</span>
+              </div>
+
+              <div class="prow" role="row">
+                <span class="c-no" role="cell">01</span>
+                <div class="c-name" role="cell">
+                  <span class="code">FORMAT</span>
+                  <span class="cname-cn">文本处理</span>
+                </div>
+                <span class="c-cat" role="cell">桌面工具</span>
+                <div class="c-desc" role="cell">把格式散乱的纯文本整理成统一结构；输出差异，而不是整份替换，便于逐行复核。<sup class="fn"><a href="#fn1">1</a></sup></div>
+                <span class="c-st" role="cell"><span class="st st--on"><i aria-hidden="true"></i>草案</span></span>
+              </div>
+
+              <div class="prow" role="row">
+                <span class="c-no" role="cell">02</span>
+                <div class="c-name" role="cell">
+                  <span class="code">INDEX</span>
+                  <span class="cname-cn">本地检索</span>
+                </div>
+                <span class="c-cat" role="cell">索引 / 检索</span>
+                <div class="c-desc" role="cell">为大目录建立离线索引，结果始终指回原始路径；不复制文件，也不上传任何内容。<sup class="fn"><a href="#fn2">2</a></sup></div>
+                <span class="c-st" role="cell"><span class="st st--on"><i aria-hidden="true"></i>草案</span></span>
+              </div>
+
+              <div class="prow" role="row">
+                <span class="c-no" role="cell">03</span>
+                <div class="c-name" role="cell">
+                  <span class="code">SHELF</span>
+                  <span class="cname-cn">归档</span>
+                </div>
+                <span class="c-cat" role="cell">流程工具</span>
+                <div class="c-desc" role="cell">面向长期项目的一次性归档流程；写完之后即可离线，不做常驻同步。</div>
+                <span class="c-st" role="cell"><span class="st"><i aria-hidden="true"></i>未开始</span></span>
+              </div>
+
+              <div class="prow" role="row">
+                <span class="c-no" role="cell">04</span>
+                <div class="c-name" role="cell">
+                  <span class="code">— — —</span>
+                  <span class="cname-cn">未命名</span>
+                </div>
+                <span class="c-cat" role="cell">待定</span>
+                <div class="c-desc" role="cell">已记录，尚未展开。保留位置，避免在问题清楚之前就决定答案。<sup class="fn"><a href="#fn3">3</a></sup></div>
+                <span class="c-st" role="cell"><span class="st st--hold"><i aria-hidden="true"></i>搁置</span></span>
+              </div>
+
+            </div>
+
+            <div class="notes" id="fn1">
+              <div><b>1</b><span>草案 — 范围已写下，实现未开始或未完成。</span></div>
+              <div><b>2</b><span>FORMAT、INDEX、SHELF 均为工作代号，定稿前可能更换。</span></div>
+              <div><b>3</b><span>搁置 — 范围已记录，暂不推进；也可能永远不会发布。</span></div>
+            </div>
+
+            <div class="pfoot">
+              <strong>判断完成的标准</strong>
+              <span>写在范围里，不写在路线图里。</span>
+            </div>
+
+          </div>
+        </div>
+
+        <aside class="mnote" aria-hidden="true">
+          <span class="mnote__v">占位条目 · 不构成发布承诺</span>
+        </aside>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===================== ABOUT ===================== -->
+  <section class="sec" id="about" aria-labelledby="about-title">
+    <div class="wrap">
+
+      <div class="sec__head">
+        <span class="sec__no">§ 02</span>
+        <h2 class="sec__title" id="about-title">关于</h2>
+        <span class="sec__en">About</span>
+        <span class="sec__meta">04 节 · 工作室说明</span>
+      </div>
+
+      <div class="sec__body">
+        <aside class="rail2">
+          <div class="rail__in">
+            <span class="rail__no">02</span>
+            <span class="rail__v">工作室说明</span>
+          </div>
+        </aside>
+
+        <div class="main">
+          <div class="main-grid">
+
+            <p class="astatement">先把问题写清楚，再决定要不要写代码。</p>
+
+            <div class="ablocks">
+              <div class="ablock">
+                <h3><span>01</span>起点</h3>
+                <p>暮点工作室的前身是 Feedra，一个发布在 feedra.org 的项目。名字换了，域名留着，做事的方式也留着：先弄清问题，再动手。</p>
+              </div>
+
+              <div class="ablock ablock--b">
+                <h3><span>02</span>做法</h3>
+                <p>每个项目从一份书面范围开始：做什么、不做什么、怎样算完成。范围写在代码之前，也写在代码之后，用来复查。</p>
+              </div>
+
+              <div class="ablock">
+                <h3><span>03</span>取舍</h3>
+                <p>体量小意味着主动放弃。不做平台，不做增长实验，不做必须持续运营才能成立的产品。留下来的东西要能自己站着。</p>
+              </div>
+
+              <div class="ablock ablock--b">
+                <h3><span>04</span>维护</h3>
+                <p>交付不是终点。每个项目保留一份维护说明：依赖什么、哪里脆弱、下一个人接手时需要先知道什么。</p>
+              </div>
+              <div class="gloss">
+                <span class="k">用词 / TERMS</span>
+                <dl>
+                  <div><dt>范围 <span>scope</span></dt><dd>一份写下来的边界：做什么、不做什么、怎样算完成。没有它就不开始排期。</dd></div>
+                  <div><dt>草案 <span>draft</span></dt><dd>已写下、未定稿。名称与能力都可能改变，不构成对外承诺。</dd></div>
+                  <div><dt>搁置 <span>held</span></dt><dd>记录在案，暂不推进。可能重启，也可能永远不发布。</dd></div>
+                </dl>
+              </div>
+            </div>
+
+            <aside class="facts" aria-label="工作室信息">
+              <span class="k">档案 / RECORD</span>
+              <dl>
+                <div><dt>名称</dt><dd>Duskbit / 暮点工作室</dd></div>
+                <div><dt>前身</dt><dd>Feedra（feedra.org）</dd></div>
+                <div><dt>形态</dt><dd>独立软件工作室</dd></div>
+                <div><dt>在制</dt><dd>若干，未定稿</dd></div>
+                <div><dt>联系</dt><dd class="mono">hello@duskbit.dev</dd></div>
+                <div><dt>本页</dt><dd>单页 · 双主题 · 无外部资源</dd></div>
+              </dl>
+              <p class="facts__note">以上信息随草案更新；未注明日期的内容不代表承诺。</p>
+            </aside>
+
+
+          </div>
+        </div>
+
+        <aside class="mnote" aria-hidden="true">
+          <span class="mnote__v">Feedra 是前身，不是别名</span>
+        </aside>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<footer class="foot">
+  <div class="wrap">
+    <div class="foot__top">
+      <div class="foot__brand">
+        <svg viewBox="0 0 9.5 7" aria-hidden="true"><path fill="currentColor" d="M0 0H2.5V1H1V6H2.5V7H0Z M9.5 0H7V1H8.5V6H7V7H9.5Z"/><rect x="3.25" y="2" width="3" height="3" fill="#F26B3A"/></svg>
+        <b>Duskbit</b>
+        <span>暮点工作室</span>
+      </div>
+      <a class="up" href="#top">回到顶部 ↑</a>
+    </div>
+
+    <div class="foot__cols">
+      <div class="fcol">
+        <span class="k">索引 / INDEX</span>
+        <ul>
+          <li><span>产品</span><b>§ 01</b></li>
+          <li><span>关于</span><b>§ 02</b></li>
+          <li><span>概述</span><b>§ 00</b></li>
+        </ul>
+      </div>
+      <div class="fcol">
+        <span class="k">站点 / SITE</span>
+        <ul>
+          <li><span>主域</span><b>duskbit.dev</b></li>
+          <li><span>前身</span><b>feedra.org</b></li>
+          <li><span>联系</span><b>hello@duskbit.dev</b></li>
+        </ul>
+      </div>
+      <div class="fcol">
+        <span class="k">编制 / COLOPHON</span>
+        <ul>
+          <li><span>字体</span><b>系统无衬线 · 等宽</b></li>
+          <li><span>网格</span><b>12 栏 / 20px</b></li>
+          <li><span>强调</span><b>#F26B3A</b></li>
+        </ul>
+      </div>
+      <div class="fcol">
+        <span class="k">状态 / STATUS</span>
+        <ul>
+          <li><span>版本</span><b>草案 0.1</b></li>
+          <li><span>文件</span><b>单页 HTML</b></li>
+          <li><span>追踪</span><b>无</b></li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="foot__base">
+      <span>© 2026 Duskbit — 暮点工作室</span>
+      <span>本页不收集访问数据</span>
+    </div>
+  </div>
+</footer>
+
+<script>
+(function () {
+  var root = document.documentElement;
+  var btns = Array.prototype.slice.call(document.querySelectorAll('[data-set]'));
+  var KEY = 'duskbit-theme';
+
+  function apply(mode) {
+    if (mode === 'auto') {
+      root.removeAttribute('data-theme');
+    } else {
+      root.setAttribute('data-theme', mode);
+    }
+    btns.forEach(function (b) {
+      b.setAttribute('aria-pressed', b.getAttribute('data-set') === mode ? 'true' : 'false');
+    });
+  }
+
+  var saved = null;
+  try { saved = localStorage.getItem(KEY); } catch (e) {}
+  apply(saved === 'light' || saved === 'dark' ? saved : 'auto');
+
+  btns.forEach(function (b) {
+    b.addEventListener('click', function () {
+      var mode = b.getAttribute('data-set');
+      apply(mode);
+      try { localStorage.setItem(KEY, mode); } catch (e) {}
+    });
+  });
+})();
+</script>
+
+</body>
+</html>

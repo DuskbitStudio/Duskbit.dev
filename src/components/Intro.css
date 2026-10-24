@@ -1,0 +1,86 @@
+/* ── Intro overlay ──
+   Timeline — 0.30s hold, then 1.17s of motion (hold excluded from the
+   1.5s budget):
+     0.00 – 0.30s  logo holds, completely still
+     0.30 – 1.15s  orange bit leads: starts first, grows to cover viewport
+     0.36 – 0.82s  brackets trail: accelerate outward and fade
+     1.15 – 1.47s  overlay dissolves, revealing the page
+   Nav fades in at 1.47s via onComplete.
+*/
+.intro {
+  position: fixed;
+  inset: 0;
+  z-index: 9999;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  background: var(--paper);
+  animation: intro-out 0.32s var(--ease-precise) 1.15s both;
+}
+
+.intro-mark {
+  display: flex;
+  align-items: center;
+  /* gap = 0.75u of the logo module, where u = 160px / 9.5 */
+  gap: calc(160px / 9.5 * 0.75);
+}
+
+/* Brackets trail the bit: they start 0.06s later and are gone before it lands. */
+.intro-bracket {
+  width: calc(160px / 9.5 * 2.5);
+  height: calc(160px / 9.5 * 7);
+  display: block;
+  color: var(--ink);
+  animation: bracket-out-left 0.46s var(--ease-precise) 0.36s both;
+}
+
+.intro-bracket:nth-of-type(2) {
+  animation-name: bracket-out-right;
+}
+
+/* Orange bit leads the whole motion — first thing to move after the hold. */
+.intro-bit {
+  width: calc(160px / 9.5 * 3);
+  height: calc(160px / 9.5 * 3);
+  background: var(--accent);
+  transform-origin: center;
+  animation: bit-cover 0.85s cubic-bezier(0.7, 0, 0.9, 0.5) 0.3s both;
+}
+
+/* ── keyframes ── */
+
+/* Brackets accelerate away — never bounce, just leave. */
+@keyframes bracket-out-left {
+  0%   { transform: translateX(0)     scale(1);   opacity: 1; }
+  70%  {                                           opacity: 0.55; }
+  100% { transform: translateX(-70vw) scale(0.9); opacity: 0; }
+}
+
+@keyframes bracket-out-right {
+  0%   { transform: translateX(0)    scale(1);   opacity: 1; }
+  70%  {                                          opacity: 0.55; }
+  100% { transform: translateX(70vw) scale(0.9); opacity: 0; }
+}
+
+/*
+  --cover-scale is computed from the viewport diagonal so the bit always
+  fills the screen edge-to-edge, at any aspect ratio.
+  The 14% swell commits the bit to motion immediately, while the brackets
+  are still on screen; the long tail then grows it to full coverage.
+*/
+@keyframes bit-cover {
+  0%   { transform: scale(1); }
+  14%  { transform: scale(1.28); }
+  100% { transform: scale(var(--cover-scale)); }
+}
+
+/* Overlay dissolves to the page once the bit has covered it. */
+@keyframes intro-out {
+  from { opacity: 1; }
+  to   { opacity: 0; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .intro { display: none; }
+}

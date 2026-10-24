@@ -1,0 +1,196 @@
+.table { padding-top: var(--u); }
+
+.tr {
+  display: grid;
+  grid-template-columns: calc(var(--u) * 8) minmax(0, 1fr) calc(var(--u) * 26) calc(var(--u) * 12);
+  gap: var(--gutter);
+  align-items: start;
+  padding: calc(var(--u) * 3) 0;
+  border-bottom: 1px solid var(--hair);
+}
+
+.tr.th {
+  padding: calc(var(--u) * 2) 0 12px;
+  border-bottom: 1px solid var(--hair-strong);
+}
+
+.tr.th span {
+  font-family: var(--mono);
+  font-size: 9px;
+  line-height: 12px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+
+.tr.th span:last-child { text-align: right; }
+
+/* Row mark + lift */
+article.tr {
+  position: relative;
+  transition: transform 0.18s var(--ease-precise), box-shadow 0.18s var(--ease-precise);
+}
+
+article.tr::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  width: 2px;
+  background: var(--accent);
+  transform: scaleY(0);
+  transform-origin: top;
+  transition: transform 0.22s var(--ease-precise);
+}
+
+article.tr:hover::before { transform: scaleY(1); }
+
+article.tr:hover {
+  transform: translateY(-1px);
+  box-shadow: var(--shadow-lift);
+}
+
+.p-idx {
+  font-family: var(--mono);
+  font-size: 10px;
+  line-height: 28px;
+  letter-spacing: 0.08em;
+  color: var(--muted);
+  font-variant-numeric: tabular-nums;
+}
+
+.p-name-link {
+  display: inline-block;
+}
+
+/* Left-draw underline replaces the old border-bottom swap */
+.p-name {
+  margin: 0;
+  font-size: 20px;
+  line-height: 28px;
+  font-weight: 500;
+  letter-spacing: -0.005em;
+  position: relative;
+}
+
+.p-name::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: 1px;
+  background: var(--accent);
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform 0.22s var(--ease-precise);
+}
+
+.p-name-link:hover .p-name::after { transform: scaleX(1); }
+
+.p-desc {
+  margin: 4px 0 0;
+  font-size: 14px;
+  line-height: 24px;
+  color: var(--muted);
+  max-width: 40em;
+}
+
+/* Secondary tag — reveals on row hover */
+.p-tag {
+  display: inline-block;
+  margin-top: 5px;
+  font-family: var(--mono);
+  font-size: 9px;
+  letter-spacing: 0.12em;
+  color: var(--accent);
+  opacity: 0;
+  transform: translateY(2px);
+  transition: opacity 0.18s var(--ease-precise), transform 0.18s var(--ease-precise);
+}
+
+article.tr:hover .p-tag {
+  opacity: 1;
+  transform: none;
+}
+
+.p-meta {
+  font-family: var(--mono);
+  font-size: 9px;
+  line-height: 16px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--muted);
+  padding-top: 6px;
+}
+
+.p-status {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: var(--u);
+  font-family: var(--mono);
+  font-size: 9px;
+  line-height: 16px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--muted);
+  padding-top: 6px;
+  white-space: nowrap;
+}
+
+.p-status i {
+  width: 7px;
+  height: 7px;
+  border: 1px solid var(--accent);
+  display: block;
+  flex: none;
+}
+
+.table-note {
+  display: flex;
+  gap: calc(var(--u) * 2);
+  padding-top: calc(var(--u) * 3);
+}
+
+/* Ink, not accent: orange at 9px falls to 3:1 on white. */
+.table-note .mark {
+  font-family: var(--mono);
+  font-size: 9px;
+  line-height: 16px;
+  letter-spacing: 0.1em;
+  color: var(--ink);
+  flex: none;
+}
+
+.table-note p {
+  margin: 0;
+  font-size: 13px;
+  line-height: 20px;
+  color: var(--muted);
+  max-width: 58em;
+}
+
+@media (max-width: 1100px) {
+  .tr { grid-template-columns: calc(var(--u) * 7) minmax(0, 1fr) 180px 88px; }
+}
+
+@media (max-width: 760px) {
+  .tr {
+    grid-template-columns: calc(var(--u) * 5) minmax(0, 1fr);
+    gap: 4px calc(var(--u) * 2);
+    padding: 20px 0;
+  }
+  .tr.th { display: none; }
+  .p-idx { line-height: 24px; }
+  .p-name { font-size: 18px; line-height: 24px; }
+  .p-meta { grid-column: 2; padding-top: var(--u); }
+  .p-status { grid-column: 2; justify-content: flex-start; padding-top: 4px; }
+
+  .table-note { padding-top: 20px; gap: 12px; }
+
+  /* Disable lift on touch; give keyboard users the accent bar */
+  article.tr:hover { transform: none; box-shadow: none; }
+  article.tr:focus-within::before { transform: scaleY(1); }
+}

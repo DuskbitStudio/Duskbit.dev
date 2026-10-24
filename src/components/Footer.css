@@ -1,0 +1,149 @@
+.footer { border-top: 1px solid var(--hair); }
+
+/* Horizontal ruler: minor tick every 2u, major every 10u. */
+.ruler {
+  height: calc(var(--u) * 2);
+  border-bottom: 1px solid var(--hair);
+  background-image:
+    repeating-linear-gradient(90deg, var(--hair-strong) 0 1px, transparent 1px calc(var(--u) * 2)),
+    repeating-linear-gradient(90deg, var(--hair-strong) 0 1px, transparent 1px calc(var(--u) * 10));
+  background-size: 100% 4px, 100% 9px;
+  background-position: left bottom, left bottom;
+  background-repeat: no-repeat;
+  /* Draw in left-to-right. clip-path does not affect background-image
+     coordinates, so the tick geometry stays intact. */
+  clip-path: inset(0 100% 0 0);
+  transition: clip-path 0.9s var(--ease-precise);
+  position: relative;
+  overflow: hidden;
+}
+
+.footer.is-in .ruler {
+  clip-path: inset(0 0% 0 0);
+}
+
+/* Orange bit sweeps the full width once, then fades as it exits. */
+.ruler::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  width: 8%;
+  background: var(--accent);
+  opacity: 0.6;
+  transform: translateX(-100%);
+  transition: transform 1s var(--ease-precise) 0.1s, opacity 0.3s ease 0.8s;
+}
+
+.footer.is-in .ruler::after {
+  transform: translateX(1300%);
+  opacity: 0;
+}
+
+.foot-top {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: calc(var(--u) * 4);
+  flex-wrap: wrap;
+  padding: calc(var(--u) * 6) 0 calc(var(--u) * 5);
+}
+
+.foot-brand {
+  display: flex;
+  align-items: center;
+  gap: calc(var(--u) * 2);
+}
+
+.foot-brand svg {
+  width: 62px;
+  height: auto;
+  display: block;
+}
+
+.foot-brand .word {
+  font-size: 20px;
+  line-height: 24px;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+}
+
+.foot-brand .zh {
+  display: block;
+  font-family: var(--mono);
+  font-size: 9px;
+  line-height: 16px;
+  letter-spacing: 0.18em;
+  color: var(--muted);
+  margin-top: 4px;
+}
+
+.foot-links {
+  display: flex;
+  gap: calc(var(--u) * 4);
+  align-items: baseline;
+}
+
+.foot-links a {
+  position: relative;
+  font-family: var(--mono);
+  font-size: 10px;
+  line-height: 16px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  border-bottom-color: transparent;
+  padding-bottom: 2px;
+}
+
+.foot-links a::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: -2px;
+  height: 1px;
+  background: var(--accent);
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform 0.22s var(--ease-precise);
+}
+
+.foot-links a:hover::after,
+.foot-links a:focus-visible::after {
+  transform: scaleX(1);
+}
+
+/* Reveal cascade for the two foot blocks. */
+.foot-top.reveal,
+.foot-bottom.reveal {
+  transition-delay: var(--reveal-delay, 0s);
+}
+
+.foot-bottom {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: var(--gutter);
+  flex-wrap: wrap;
+  padding: calc(var(--u) * 2) 0 calc(var(--u) * 5);
+  border-top: 1px solid var(--hair);
+  color: var(--muted);
+}
+
+.foot-bottom .spec-line {
+  font-family: var(--mono);
+  font-size: 9px;
+  line-height: 16px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+@media (max-width: 760px) {
+  .foot-top { padding: calc(var(--u) * 4) 0 28px; gap: calc(var(--u) * 3); }
+  .foot-brand svg { width: 48px; }
+  .foot-links { gap: calc(var(--u) * 3); }
+  .foot-bottom { padding: calc(var(--u) * 2) 0 calc(var(--u) * 4); gap: var(--u); }
+  /* The spec line quotes desktop values; hide it where they no longer hold. */
+  .foot-bottom .spec-line { display: none; }
+}
